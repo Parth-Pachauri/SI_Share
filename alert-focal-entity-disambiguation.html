@@ -1,0 +1,71 @@
+<!-- entity-disambiguation-focal-entity.component.html -->
+<div class="focal-entity-container">
+
+  <!-- Header: Parent selector + Flag quality -->
+  <div class="header">
+    <label>
+      <span>Focal Entity Parent:</span>
+      <select [ngModel]="focalEntityData?.parentName" disabled>
+        <option [value]="focalEntityData?.parentName">
+          {{ focalEntityData?.parentName }}
+        </option>
+      </select>
+    </label>
+
+    <label class="flag-quality">
+      <input type="checkbox"
+             [checked]="focalEntityData?.flagQualityIssue"
+             (change)="updateFlagQualityIssue($event)">
+      <span>Flag Party pair quality issue</span>
+    </label>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th class="select-col">
+            <input type="checkbox"
+                   [checked]="isAllSelected()"
+                   (click)="toggleAllSelection($event)">
+          </th>
+          <th>Entity Name</th>
+          <th>PE ID</th>
+          <th>Identity Type</th>
+          <th>Identity</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entity of focalEntityData?.focalEntities"
+            [class.selected]="entity.isSelected"
+            (click)="selectEntity(entity)">
+          <td class="select-col">
+            <input type="checkbox"
+                   [checked]="entity.isSelected"
+                   (click)="toggleSelection(entity, $event)">
+          </td>
+          <td>{{ entity.name }}</td>
+          <td>{{ entity.peId }}</td>
+          <td>
+            <select [ngModel]="entity.identityType"
+                    class="identity-type-select">
+              <option *ngFor="let type of identityTypes"
+                      [value]="type">{{ type }}</option>
+            </select>
+          </td>
+          <td>
+            <input type="text"
+                   [ngModel]="entity.identity"
+                   class="identity-input">
+          </td>
+          <td>
+            <button class="action-btn">...</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
