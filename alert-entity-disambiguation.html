@@ -2,7 +2,7 @@
 <div class="disambiguation-container">
   <div class="content-wrapper">
 
-    <!-- ── Tabs ─────────────────────────────────────────── -->
+    <!-- Tabs -->
     <div class="tabs">
       <button class="tab-button"
               [class.active]="activeTab === 'focal'"
@@ -16,32 +16,27 @@
       </button>
     </div>
 
-    <!-- ── 3-Column Layout ───────────────────────────────── -->
+    <!-- 3-Column Layout -->
     <div class="three-column-layout">
 
-      <!-- ════════════════════════════════════════════════
-           LEFT PANEL — Entity Card List
-           ════════════════════════════════════════════════ -->
-<div class="left-panel">
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
 
-        <!-- ── FOCAL TAB ── -->
+        <!-- FOCAL TAB -->
         <ng-container *ngIf="activeTab === 'focal'">
 
-          <!-- Fixed pinned first card (parent) — grey, no checkbox -->
-          <div class="entity-card pinned-card"
-               *ngIf="focalEntityData[selectedDataKey]?.focalEntities?.length > 0">
-            <div class="card-name">
-              {{ focalEntityData[selectedDataKey].focalEntities[0].name }}
+          <!-- Pinned first card — grey, no checkbox -->
+          <ng-container *ngIf="focalEntityData[selectedDataKey] as fd">
+            <div class="entity-card pinned-card" *ngIf="fd.focalEntities && fd.focalEntities.length > 0">
+              <div class="card-name">{{ fd.focalEntities[0].name }}</div>
+              <div class="card-sub">{{ fd.focalEntities[0].peId }}</div>
             </div>
-            <div class="card-sub">
-              {{ focalEntityData[selectedDataKey].focalEntities[0].peId }}
-            </div>
-          </div>
+          </ng-container>
 
           <!-- Fixed divider -->
           <div class="panel-divider"></div>
 
-          <!-- Scrollable remaining cards (index 1 onwards) -->
+          <!-- Scrollable remaining cards -->
           <div class="scrollable-cards">
             <ng-container *ngFor="let entity of focalEntityData[selectedDataKey]?.focalEntities; let i = index">
               <div *ngIf="i > 0"
@@ -64,19 +59,16 @@
 
         </ng-container>
 
-        <!-- ── COUNTER TAB ── -->
+        <!-- COUNTER TAB -->
         <ng-container *ngIf="activeTab === 'counter'">
 
-          <!-- Fixed pinned first card -->
-          <div class="entity-card pinned-card"
-               *ngIf="counterPartyData[selectedDataKey]?.counterParties?.length > 0">
-            <div class="card-name">
-              {{ counterPartyData[selectedDataKey].counterParties[0].name }}
+          <!-- Pinned first card -->
+          <ng-container *ngIf="counterPartyData[selectedDataKey] as cd">
+            <div class="entity-card pinned-card" *ngIf="cd.counterParties && cd.counterParties.length > 0">
+              <div class="card-name">{{ cd.counterParties[0].name }}</div>
+              <div class="card-sub">{{ cd.counterParties[0].peId }}</div>
             </div>
-            <div class="card-sub">
-              {{ counterPartyData[selectedDataKey].counterParties[0].peId }}
-            </div>
-          </div>
+          </ng-container>
 
           <!-- Fixed divider -->
           <div class="panel-divider"></div>
@@ -107,9 +99,7 @@
       </div><!-- /left-panel -->
 
 
-      <!-- ════════════════════════════════════════════════
-           MIDDLE PANEL — Parent Selector + Table + Save
-           ════════════════════════════════════════════════ -->
+      <!-- MIDDLE PANEL -->
       <div class="middle-panel">
 
         <!-- Parent Selector Row -->
@@ -132,7 +122,7 @@
           </label>
         </div>
 
-        <!-- ── FOCAL ENTITY TABLE ── -->
+        <!-- FOCAL ENTITY TABLE -->
         <div class="table-container" *ngIf="activeTab === 'focal'">
           <table class="entity-table">
             <thead>
@@ -191,7 +181,7 @@
           </table>
         </div>
 
-        <!-- ── COUNTER PARTY TABLE ── -->
+        <!-- COUNTER PARTY TABLE -->
         <div class="table-container" *ngIf="activeTab === 'counter'">
           <table class="entity-table">
             <thead>
@@ -260,9 +250,7 @@
       </div><!-- /middle-panel -->
 
 
-      <!-- ════════════════════════════════════════════════
-           RIGHT PANEL — Choose Entity / Details
-           ════════════════════════════════════════════════ -->
+      <!-- RIGHT PANEL -->
       <div class="right-panel">
 
         <!-- FOCAL: empty state -->
@@ -294,8 +282,7 @@
         </ng-container>
 
         <!-- FOCAL: selected entity details -->
-        <div *ngFor="let entity of selectedFocalEntities"
-             class="entity-detail">
+        <div *ngFor="let entity of selectedFocalEntities" class="entity-detail">
           <div class="details-header">
             <strong>Focal Party ID: {{ entity.peId }}</strong>
           </div>
@@ -312,21 +299,18 @@
             <label>Country:</label>
             <span>{{ entity.country }}</span>
           </div>
-          <div class="detail-row"
-               *ngIf="entity.totalTransactionCount !== undefined">
+          <div class="detail-row" *ngIf="entity.totalTransactionCount !== undefined">
             <label>Total Tx Count:</label>
             <span>{{ entity.totalTransactionCount }}</span>
           </div>
-          <div class="detail-row"
-               *ngIf="entity.identityType && entity.identity">
+          <div class="detail-row" *ngIf="entity.identityType && entity.identity">
             <label>{{ entity.identityType }}:</label>
             <span>{{ entity.identity }}</span>
           </div>
         </div>
 
         <!-- COUNTER: selected party details -->
-        <div *ngFor="let entity of selectedCounterParties"
-             class="entity-detail">
+        <div *ngFor="let entity of selectedCounterParties" class="entity-detail">
           <div class="details-header">
             <strong>Counter Party ID: {{ entity.peId }}</strong>
           </div>
@@ -343,15 +327,13 @@
             <label>Country:</label>
             <span>{{ entity.country }}</span>
           </div>
-          <div class="detail-row"
-               *ngIf="entity.identityType && entity.identity">
+          <div class="detail-row" *ngIf="entity.identityType && entity.identity">
             <label>{{ entity.identityType }}:</label>
             <span>{{ entity.identity }}</span>
           </div>
-          <div class="parent-info"
-               *ngIf="activeTab === 'counter'">
+          <div class="parent-info" *ngIf="activeTab === 'counter'">
             <strong>Parent ID:</strong>
-            {{ counterPartyData[selectedDataKey]?.parentPeId }}
+            {{ counterPartyData[selectedDataKey].parentPeId }}
           </div>
         </div>
 
