@@ -1,7 +1,7 @@
 <!-- entity-disambiguation-focal-entity.component.html -->
 <div class="focal-entity-container">
 
-  <!-- Header: Parent selector + Flag quality -->
+  <!-- Header: Parent name (read-only) + Flag quality -->
   <div class="header">
     <label>
       <span>Focal Entity Parent:</span>
@@ -28,7 +28,7 @@
           <th class="select-col">
             <input type="checkbox"
                    [checked]="isAllSelected()"
-                   (click)="toggleAllSelection($event)">
+                   (change)="toggleAllSelection($event)">
           </th>
           <th>Entity Name</th>
           <th>PE ID</th>
@@ -44,24 +44,35 @@
           <td class="select-col">
             <input type="checkbox"
                    [checked]="entity.isSelected"
-                   (click)="toggleSelection(entity, $event)">
+                   (change)="toggleSelection(entity, $event)"
+                   (click)="$event.stopPropagation()">
           </td>
           <td>{{ entity.name }}</td>
           <td>{{ entity.peId }}</td>
           <td>
-            <select [ngModel]="entity.identityType"
-                    class="identity-type-select">
+            <select [(ngModel)]="entity.identityType"
+                    class="identity-type-select"
+                    (click)="$event.stopPropagation()">
               <option *ngFor="let type of identityTypes"
                       [value]="type">{{ type }}</option>
             </select>
           </td>
           <td>
             <input type="text"
-                   [ngModel]="entity.identity"
-                   class="identity-input">
+                   [(ngModel)]="entity.identity"
+                   class="identity-input"
+                   (click)="$event.stopPropagation()">
           </td>
           <td>
-            <button class="action-btn">...</button>
+            <button class="action-btn"
+                    (click)="onActionMenu($event, entity)">...</button>
+            <div class="action-menu"
+                 *ngIf="showActionMenu && activeEntity?.peId === entity.peId"
+                 [style.top.px]="menuPosition?.top"
+                 [style.left.px]="menuPosition?.left">
+              <div class="menu-item"
+                   (click)="onMarkAsParent(entity, $event)">Set as parent</div>
+            </div>
           </td>
         </tr>
       </tbody>

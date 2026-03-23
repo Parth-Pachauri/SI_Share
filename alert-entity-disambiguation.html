@@ -113,14 +113,16 @@
           *ngIf="activeTab === 'focal'"
           [focalEntityData]="focalEntityData[selectedDataKey]"
           (selectedEntityChange)="onFocalEntitySelected($event)"
-          (flagQualityIssueChange)="onFlagQualityIssueChanged($event)">
+          (flagQualityIssueChange)="onFlagQualityIssueChanged($event)"
+          (markAsParentChange)="markAsParent($event, $event)">
         </app-entity-disambiguation-focal-entity>
 
         <!-- Counter Party child component -->
         <app-entity-disambiguation-counter-party
           *ngIf="activeTab === 'counter'"
           [counterPartyData]="counterPartyData[selectedDataKey]"
-          (selectedEntityChange)="onCounterPartySelected($event)">
+          (selectedEntityChange)="onCounterPartySelected($event)"
+          (markAsParentChange)="markAsParent($event, $event)">
         </app-entity-disambiguation-counter-party>
 
         <!-- Save Button -->
