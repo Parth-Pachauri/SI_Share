@@ -14,7 +14,7 @@
 
     <label class="flag-quality">
       <input type="checkbox"
-             [checked]="focalEntityData?.flagQualityIssue"
+             [checked]="focalEntityData?.flagQualityIssue ?? false"
              (change)="updateFlagQualityIssue($event)">
       <span>Flag Party pair quality issue</span>
     </label>

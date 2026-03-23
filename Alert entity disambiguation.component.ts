@@ -377,4 +377,40 @@ export class AlertEntityDisambiguationComponent implements OnInit {
     this.selectedDataKey = (event.target as HTMLSelectElement).value;
     this.loadDefaultFocalEntity();
   }
+
+  // ── Bridge: flagQualityIssue from child (emits boolean) ──
+  onFlagQualityIssueChangedFromChild(value: boolean) {
+    if (this.focalEntityData[this.selectedDataKey]) {
+      this.focalEntityData[this.selectedDataKey].flagQualityIssue = value;
+    }
+  }
+
+  // ── Bridge: markAsParent from child (emits entity) ───────
+  onMarkAsParentFromChild(entity: any) {
+    if (this.activeTab === 'focal') {
+      this.selectedDataKey = entity.peId;
+
+      if (!this.parentOptions.some(opt => opt.value === entity.peId)) {
+        this.parentOptions.push({
+          value: entity.peId,
+          label: entity.name
+        });
+      }
+
+      this.currentParent = {
+        type: 'focal',
+        id: entity.peId,
+        name: entity.name
+      };
+    } else if (this.activeTab === 'counter') {
+      this.counterPartyData[this.selectedDataKey].parentPeId = entity.peId;
+      this.counterPartyData[this.selectedDataKey].parentName = entity.name;
+
+      this.currentParent = {
+        type: 'counter',
+        id: entity.peId,
+        name: entity.name
+      };
+    }
+  }
 }
