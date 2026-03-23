@@ -1,16 +1,23 @@
 <!-- entity-disambiguation-counter-party.component.html -->
 <div class="counter-party-container">
 
-  <!-- Header: Parent name (read-only) -->
+  <!-- Header: Parent dropdown (active) -->
   <div class="header">
     <label>
       <span>Counter Party Parent:</span>
-      <select [ngModel]="counterPartyData?.parentName" disabled>
-        <option [value]="counterPartyData?.parentName">
-          {{ counterPartyData?.parentName }}
+      <select [(ngModel)]="selectedParentKey"
+              (change)="onParentChange($event)">
+        <option *ngFor="let option of parentOptions"
+                [value]="option.value">
+          {{ option.label }}
         </option>
       </select>
     </label>
+  </div>
+
+  <!-- Selected parent PE ID display -->
+  <div class="parent-pe-id" *ngIf="selectedParentPeId">
+    {{ selectedParentPeId }}
   </div>
 
   <!-- Table -->

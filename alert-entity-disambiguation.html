@@ -121,8 +121,11 @@
         <app-entity-disambiguation-counter-party
           *ngIf="activeTab === 'counter'"
           [counterPartyData]="counterPartyData[selectedDataKey]"
+          [parentOptions]="parentOptions"
+          [selectedDataKey]="selectedDataKey"
           (selectedEntityChange)="onCounterPartySelected($event)"
-          (markAsParentChange)="onMarkAsParentFromChild($event)">
+          (markAsParentChange)="onMarkAsParentFromChild($event)"
+          (parentKeyChange)="onCounterParentKeyChange($event)">
         </app-entity-disambiguation-counter-party>
 
         <!-- Save Button -->

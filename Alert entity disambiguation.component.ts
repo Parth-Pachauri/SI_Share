@@ -385,6 +385,20 @@ export class AlertEntityDisambiguationComponent implements OnInit {
     }
   }
 
+  // ── Bridge: counter parent key change from child dropdown ──
+  onCounterParentKeyChange(key: string) {
+    this.selectedDataKey = key;
+    // Reload counter parties for new key
+    const counterData = this.counterPartyData[this.selectedDataKey];
+    if (counterData?.counterParties && counterData.counterParties.length > 0) {
+      this.selectedCounterParties = [counterData.counterParties[0]];
+      counterData.counterParties.forEach(e => e.isSelected = false);
+      counterData.counterParties[0].isSelected = true;
+    } else {
+      this.selectedCounterParties = [];
+    }
+  }
+
   // ── Bridge: markAsParent from child (emits entity) ───────
   onMarkAsParentFromChild(entity: any) {
     if (this.activeTab === 'focal') {
