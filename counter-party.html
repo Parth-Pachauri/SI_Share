@@ -1,0 +1,75 @@
+<!-- entity-disambiguation-counter-party.component.html -->
+<div class="counter-party-container">
+
+  <!-- Header: Parent name (read-only) -->
+  <div class="header">
+    <label>
+      <span>Counter Party Parent:</span>
+      <select [ngModel]="counterPartyData?.parentName" disabled>
+        <option [value]="counterPartyData?.parentName">
+          {{ counterPartyData?.parentName }}
+        </option>
+      </select>
+    </label>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th class="select-col">
+            <input type="checkbox"
+                   [checked]="isAllSelected()"
+                   (change)="toggleAllSelection($event)">
+          </th>
+          <th>Counter Party Name</th>
+          <th>PE ID</th>
+          <th>Identity Type</th>
+          <th>Identity</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entity of counterPartyData?.counterParties"
+            [class.selected]="entity.isSelected"
+            (click)="selectEntity(entity)">
+          <td class="select-col">
+            <input type="checkbox"
+                   [checked]="entity.isSelected"
+                   (change)="toggleSelection(entity, $event)"
+                   (click)="$event.stopPropagation()">
+          </td>
+          <td>{{ entity.name }}</td>
+          <td>{{ entity.peId }}</td>
+          <td>
+            <select [(ngModel)]="entity.identityType"
+                    class="identity-type-select"
+                    (click)="$event.stopPropagation()">
+              <option *ngFor="let type of identityTypes"
+                      [value]="type">{{ type }}</option>
+            </select>
+          </td>
+          <td>
+            <input type="text"
+                   [(ngModel)]="entity.identity"
+                   class="identity-input"
+                   (click)="$event.stopPropagation()">
+          </td>
+          <td>
+            <button class="action-btn"
+                    (click)="onActionMenu($event, entity)">...</button>
+            <div class="action-menu"
+                 *ngIf="showActionMenu && activeEntity?.peId === entity.peId"
+                 [style.top.px]="menuPosition?.top"
+                 [style.left.px]="menuPosition?.left">
+              <div class="menu-item"
+                   (click)="onMarkAsParent(entity, $event)">Set as parent</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
