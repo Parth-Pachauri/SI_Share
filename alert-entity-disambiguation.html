@@ -19,24 +19,28 @@
     <!-- 3-Column Layout -->
     <div class="three-column-layout">
 
-      <!-- LEFT PANEL -->
+      <!-- ══════════════════════════════════════════
+           LEFT PANEL — Fixed pinned card + scrollable list
+           ══════════════════════════════════════════ -->
       <div class="left-panel">
 
         <!-- FOCAL TAB -->
         <ng-container *ngIf="activeTab === 'focal'">
-
-          <!-- Pinned first card — grey, no checkbox -->
           <ng-container *ngIf="focalEntityData[selectedDataKey] as fd">
-            <div class="entity-card pinned-card" *ngIf="fd.focalEntities && fd.focalEntities.length > 0">
+
+            <!-- Pinned first card — grey, no checkbox -->
+            <div class="entity-card pinned-card"
+                 *ngIf="fd.focalEntities && fd.focalEntities.length > 0">
               <div class="card-name">{{ fd.focalEntities[0].name }}</div>
               <div class="card-sub">{{ fd.focalEntities[0].peId }}</div>
             </div>
+
           </ng-container>
 
           <!-- Fixed divider -->
           <div class="panel-divider"></div>
 
-          <!-- Scrollable remaining cards -->
+          <!-- Scrollable remaining cards (index 1+) -->
           <div class="scrollable-cards">
             <ng-container *ngFor="let entity of focalEntityData[selectedDataKey]?.focalEntities; let i = index">
               <div *ngIf="i > 0"
@@ -56,18 +60,19 @@
               </div>
             </ng-container>
           </div>
-
         </ng-container>
 
         <!-- COUNTER TAB -->
         <ng-container *ngIf="activeTab === 'counter'">
-
-          <!-- Pinned first card -->
           <ng-container *ngIf="counterPartyData[selectedDataKey] as cd">
-            <div class="entity-card pinned-card" *ngIf="cd.counterParties && cd.counterParties.length > 0">
+
+            <!-- Pinned first card -->
+            <div class="entity-card pinned-card"
+                 *ngIf="cd.counterParties && cd.counterParties.length > 0">
               <div class="card-name">{{ cd.counterParties[0].name }}</div>
               <div class="card-sub">{{ cd.counterParties[0].peId }}</div>
             </div>
+
           </ng-container>
 
           <!-- Fixed divider -->
@@ -93,152 +98,30 @@
               </div>
             </ng-container>
           </div>
-
         </ng-container>
 
       </div><!-- /left-panel -->
 
 
-      <!-- MIDDLE PANEL -->
+      <!-- ══════════════════════════════════════════
+           MIDDLE PANEL — Child components handle table
+           ══════════════════════════════════════════ -->
       <div class="middle-panel">
 
-        <!-- Parent Selector Row -->
-        <div class="parent-selector">
-          <label>
-            <span>{{ activeTab === 'focal' ? 'Focal Entity' : 'Counter Party' }} Parent:</span>
-            <select [(ngModel)]="selectedDataKey"
-                    (change)="changeParentEntity($event)">
-              <option *ngFor="let option of parentOptions" [value]="option.value">
-                {{ option.label }} {{ currentParent?.id === option.value ? '(Current)' : '' }}
-              </option>
-            </select>
-          </label>
+        <!-- Focal Entity child component -->
+        <app-entity-disambiguation-focal-entity
+          *ngIf="activeTab === 'focal'"
+          [focalEntityData]="focalEntityData[selectedDataKey]"
+          (selectedEntityChange)="onFocalEntitySelected($event)"
+          (flagQualityIssueChange)="onFlagQualityIssueChanged($event)">
+        </app-entity-disambiguation-focal-entity>
 
-          <label class="flag-quality" *ngIf="activeTab === 'focal'">
-            <input type="checkbox"
-                   [ngModel]="focalEntityData[selectedDataKey].flagQualityIssue"
-                   (change)="onFlagQualityIssueChanged($event)">
-            <span>Flag Party pair quality issue</span>
-          </label>
-        </div>
-
-        <!-- FOCAL ENTITY TABLE -->
-        <div class="table-container" *ngIf="activeTab === 'focal'">
-          <table class="entity-table">
-            <thead>
-              <tr>
-                <th class="select-col">
-                  <input type="checkbox"
-                         [checked]="isAllFocalSelected()"
-                         (change)="toggleAllFocalSelection($event)">
-                </th>
-                <th>Entity Name</th>
-                <th>PE ID</th>
-                <th>Identity Type</th>
-                <th>Identity</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let entity of focalEntityData[selectedDataKey]?.focalEntities"
-                  [class.selected]="entity.isSelected"
-                  [class.current-parent]="isCurrentParent(entity.peId)">
-                <td class="select-col">
-                  <input type="checkbox"
-                         [checked]="entity.isSelected"
-                         (change)="toggleFocalSelection(entity, $event)">
-                </td>
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.peId }}</td>
-                <td>
-                  <select [(ngModel)]="entity.identityType"
-                          class="identity-type-select">
-                    <option value="LEI">LEI</option>
-                    <option value="FENERGO">FENERGO</option>
-                    <option value="CRDS">CRDS</option>
-                  </select>
-                </td>
-                <td>
-                  <input type="text"
-                         [(ngModel)]="entity.identity"
-                         class="identity-input">
-                </td>
-                <td>
-                  <button class="action-btn"
-                          (click)="toggleActionMenu($event, entity.peId, entity, 'focal')">
-                    ...
-                  </button>
-                  <div class="action-menu"
-                       *ngIf="showActionMenu[entity.peId]"
-                       [style.top.px]="actionMenuPosition?.top"
-                       [style.left.px]="actionMenuPosition?.left">
-                    <div class="menu-item"
-                         (click)="markAsParent(entity, $event)">Set as parent</div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- COUNTER PARTY TABLE -->
-        <div class="table-container" *ngIf="activeTab === 'counter'">
-          <table class="entity-table">
-            <thead>
-              <tr>
-                <th class="select-col">
-                  <input type="checkbox"
-                         [checked]="isAllCounterSelected()"
-                         (change)="toggleAllCounterSelection($event)">
-                </th>
-                <th>Counter Party Name</th>
-                <th>PE ID</th>
-                <th>Identity Type</th>
-                <th>Identity</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let entity of counterPartyData[selectedDataKey]?.counterParties"
-                  [class.selected]="entity.isSelected"
-                  [class.current-parent]="isCurrentParent(entity.peId)">
-                <td class="select-col">
-                  <input type="checkbox"
-                         [checked]="entity.isSelected"
-                         (change)="toggleCounterSelection(entity, $event)">
-                </td>
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.peId }}</td>
-                <td>
-                  <select [(ngModel)]="entity.identityType"
-                          class="identity-type-select">
-                    <option value="LEI">LEI</option>
-                    <option value="FENERGO">FENERGO</option>
-                    <option value="CRDS">CRDS</option>
-                  </select>
-                </td>
-                <td>
-                  <input type="text"
-                         [(ngModel)]="entity.identity"
-                         class="identity-input">
-                </td>
-                <td>
-                  <button class="action-btn"
-                          (click)="toggleActionMenu($event, entity.peId, entity, 'counter')">
-                    ...
-                  </button>
-                  <div class="action-menu"
-                       *ngIf="showActionMenu[entity.peId]"
-                       [style.top.px]="actionMenuPosition?.top"
-                       [style.left.px]="actionMenuPosition?.left">
-                    <div class="menu-item"
-                         (click)="markAsParent(entity, $event)">Set as parent</div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <!-- Counter Party child component -->
+        <app-entity-disambiguation-counter-party
+          *ngIf="activeTab === 'counter'"
+          [counterPartyData]="counterPartyData[selectedDataKey]"
+          (selectedEntityChange)="onCounterPartySelected($event)">
+        </app-entity-disambiguation-counter-party>
 
         <!-- Save Button -->
         <div class="global-action-buttons">
@@ -250,7 +133,9 @@
       </div><!-- /middle-panel -->
 
 
-      <!-- RIGHT PANEL -->
+      <!-- ══════════════════════════════════════════
+           RIGHT PANEL — Choose Entity / Details
+           ══════════════════════════════════════════ -->
       <div class="right-panel">
 
         <!-- FOCAL: empty state -->
