@@ -22,48 +22,86 @@
       <!-- ════════════════════════════════════════════════
            LEFT PANEL — Entity Card List
            ════════════════════════════════════════════════ -->
-      <div class="left-panel">
+<div class="left-panel">
 
-        <!-- Focal Entity Cards -->
+        <!-- ── FOCAL TAB ── -->
         <ng-container *ngIf="activeTab === 'focal'">
-          <div *ngFor="let entity of focalEntityData[selectedDataKey]?.focalEntities"
-               class="entity-card"
-               [class.active-card]="entity.isSelected"
-               (click)="selectFocalEntity(entity)">
-            <div class="card-top">
-              <div class="card-name">{{ entity.name }}</div>
-              <input type="checkbox"
-                     [checked]="entity.isSelected"
-                     (change)="toggleFocalSelection(entity, $event)"
-                     (click)="$event.stopPropagation()">
+
+          <!-- Fixed pinned first card (parent) — grey, no checkbox -->
+          <div class="entity-card pinned-card"
+               *ngIf="focalEntityData[selectedDataKey]?.focalEntities?.length > 0">
+            <div class="card-name">
+              {{ focalEntityData[selectedDataKey].focalEntities[0].name }}
             </div>
-            <div class="card-sub">{{ entity.peId }}</div>
-            <div class="card-meta">
-              <span>#of Tx: {{ entity.totalTransactionCount }}</span>
-              <span>Tx Amount: {{ entity.txAmount }}</span>
+            <div class="card-sub">
+              {{ focalEntityData[selectedDataKey].focalEntities[0].peId }}
             </div>
           </div>
+
+          <!-- Fixed divider -->
+          <div class="panel-divider"></div>
+
+          <!-- Scrollable remaining cards (index 1 onwards) -->
+          <div class="scrollable-cards">
+            <ng-container *ngFor="let entity of focalEntityData[selectedDataKey]?.focalEntities; let i = index">
+              <div *ngIf="i > 0"
+                   class="entity-card"
+                   [class.active-card]="entity.isSelected"
+                   (click)="selectFocalEntity(entity)">
+                <div class="card-top">
+                  <div class="card-info">
+                    <div class="card-name">{{ entity.name }}</div>
+                    <div class="card-sub">{{ entity.peId }}</div>
+                  </div>
+                  <input type="checkbox"
+                         [checked]="entity.isSelected"
+                         (change)="toggleFocalSelection(entity, $event)"
+                         (click)="$event.stopPropagation()">
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
         </ng-container>
 
-        <!-- Counter Party Cards -->
+        <!-- ── COUNTER TAB ── -->
         <ng-container *ngIf="activeTab === 'counter'">
-          <div *ngFor="let entity of counterPartyData[selectedDataKey]?.counterParties"
-               class="entity-card"
-               [class.active-card]="entity.isSelected"
-               (click)="selectCounterParty(entity)">
-            <div class="card-top">
-              <div class="card-name">{{ entity.name }}</div>
-              <input type="checkbox"
-                     [checked]="entity.isSelected"
-                     (change)="toggleCounterSelection(entity, $event)"
-                     (click)="$event.stopPropagation()">
+
+          <!-- Fixed pinned first card -->
+          <div class="entity-card pinned-card"
+               *ngIf="counterPartyData[selectedDataKey]?.counterParties?.length > 0">
+            <div class="card-name">
+              {{ counterPartyData[selectedDataKey].counterParties[0].name }}
             </div>
-            <div class="card-sub">{{ entity.peId }}</div>
-            <div class="card-meta">
-              <span>#of Tx: {{ entity.totalTransactionCount }}</span>
-              <span>Tx Amount: {{ entity.txAmount }}</span>
+            <div class="card-sub">
+              {{ counterPartyData[selectedDataKey].counterParties[0].peId }}
             </div>
           </div>
+
+          <!-- Fixed divider -->
+          <div class="panel-divider"></div>
+
+          <!-- Scrollable remaining cards -->
+          <div class="scrollable-cards">
+            <ng-container *ngFor="let entity of counterPartyData[selectedDataKey]?.counterParties; let i = index">
+              <div *ngIf="i > 0"
+                   class="entity-card"
+                   [class.active-card]="entity.isSelected"
+                   (click)="selectCounterParty(entity)">
+                <div class="card-top">
+                  <div class="card-info">
+                    <div class="card-name">{{ entity.name }}</div>
+                    <div class="card-sub">{{ entity.peId }}</div>
+                  </div>
+                  <input type="checkbox"
+                         [checked]="entity.isSelected"
+                         (change)="toggleCounterSelection(entity, $event)"
+                         (click)="$event.stopPropagation()">
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
         </ng-container>
 
       </div><!-- /left-panel -->
@@ -266,7 +304,7 @@
             <span>{{ entity.name }}</span>
           </div>
           <div class="detail-row"
-               *ngFor="let address of entity.addresses; let i = index">
+               *ngFor="let address of (entity.addresses || []); let i = index">
             <label>Address {{ i + 1 }}:</label>
             <span>{{ address }}</span>
           </div>
@@ -297,7 +335,7 @@
             <span>{{ entity.name }}</span>
           </div>
           <div class="detail-row"
-               *ngFor="let address of entity.addresses; let i = index">
+               *ngFor="let address of (entity.addresses || []); let i = index">
             <label>Address {{ i + 1 }}:</label>
             <span>{{ address }}</span>
           </div>
@@ -313,7 +351,7 @@
           <div class="parent-info"
                *ngIf="activeTab === 'counter'">
             <strong>Parent ID:</strong>
-            {{ counterPartyData[selectedDataKey].parentPeId }}
+            {{ counterPartyData[selectedDataKey]?.parentPeId }}
           </div>
         </div>
 

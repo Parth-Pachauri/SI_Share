@@ -59,16 +59,61 @@
 // ════════════════════════════════════════════════════════
 .left-panel {
   border-right: 1px solid #ddd;
-  overflow-y: auto;
-  padding: 8px;
   background: #f7f7f7;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // panel itself does NOT scroll
 
+  // ── Pinned first card (parent / fixed header) ──
+  .pinned-card {
+    flex-shrink: 0;           // never shrinks
+    background: #e8e8e8;      // grey background
+    border: none;
+    border-radius: 0;
+    padding: 10px 12px;
+    cursor: default;
+    margin-bottom: 0;
+
+    &:hover {
+      border-color: transparent;
+      background: #e8e8e8;    // stays grey on hover
+    }
+
+    .card-name {
+      font-weight: 700;
+      font-size: 12px;
+      color: #111;
+      line-height: 1.3;
+    }
+
+    .card-sub {
+      font-size: 11px;
+      color: #666;
+      margin-top: 2px;
+    }
+  }
+
+  // ── Divider line — fixed, never scrolls ──
+  .panel-divider {
+    flex-shrink: 0;
+    height: 1px;
+    background: #c8c8c8;
+  }
+
+  // ── Scrollable area for remaining cards ──
+  .scrollable-cards {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 8px;
+  }
+
+  // ── Regular scrollable entity cards ──
   .entity-card {
     background: white;
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 8px 10px;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
 
@@ -85,14 +130,18 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 3px;
 
       input[type="checkbox"] {
         cursor: pointer;
         accent-color: #006341;
         flex-shrink: 0;
-        margin-top: 2px;
+        margin-top: 3px;
       }
+    }
+
+    .card-info {
+      flex: 1;
+      padding-right: 8px;
     }
 
     .card-name {
@@ -100,22 +149,12 @@
       font-size: 12px;
       color: #222;
       line-height: 1.3;
-      flex: 1;
-      padding-right: 6px;
     }
 
     .card-sub {
       font-size: 11px;
       color: #888;
-      margin-bottom: 4px;
-    }
-
-    .card-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      font-size: 11px;
-      color: #666;
+      margin-top: 2px;
     }
   }
 }
